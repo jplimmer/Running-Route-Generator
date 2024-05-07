@@ -7,14 +7,14 @@ import overpy
 import requests
 
 # Initialise GoogleMaps client
-maps_api_key = "[YOUR API_KEY]"
+maps_api_key = "[GMAPS_API_KEY]"
 gmaps = googlemaps.Client(key=maps_api_key)
 
 # Set up Overpass API
 op_api = overpy.Overpass()
 
 # Mapbox
-mb_api_key = "[YOUR API_KEY]"
+mb_api_key = "[MAPBOX_API_KEY]"
 
 # Create app instance of Flask
 app = Flask(__name__)
