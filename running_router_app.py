@@ -27,6 +27,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """Renders initial page (index.html)."""
     # Create a map centered on Stockholm
     m = folium.Map(location=[59.3293, 18.0686], zoom_start=12)
 
@@ -36,6 +37,8 @@ def index():
 
 @app.route('/course', methods=['GET', 'POST'])
 def generate_course_handler():
+    """Handler for AJAX request when routeGenerateButton clicked.
+    Calls generate_course_map function, returns JSON of data for updating displayed map."""
     # Get user input from the AJAX request
     user_input = request.json
 
@@ -43,17 +46,16 @@ def generate_course_handler():
     start_location = user_input.get('location')
     distance = float(user_input.get('distance'))
 
-    # start_location = request.form['location']
-    # distance = float(request.form['distance'])
-
     # Call generate_course_map to return info required for updated map
     course_data = generate_course_map(start_location, distance)
 
     # Return course_data as part of JSON response for AJAX request
     return jsonify({"course_data": course_data})
 
-def generate_course_map(start_location, distance):
-    # Geocode the location
+def generate_course_map(start_location: str, distance: float):
+    """Takes start_location and distance as input. Creates map instance, generates route and plots on map.
+    Returns dictionary of info for displaying map, including a map HTML."""
+    # Geocode the start location
     start_geocode = gmaps.geocode(start_location)[0]['geometry']['location']
 
     # Get waypoints and centre
@@ -81,8 +83,8 @@ def generate_course_map(start_location, distance):
                   icon=folium.Icon(color="green", icon="flag-checkered", prefix="fa")).add_to(route_map)
 
     # Add markers for waypoints (excluding start/end)
-    for waypoint in way_points[1:-1]:
-        folium.Marker([waypoint[0], waypoint[1]]).add_to(route_map)
+    # for waypoint in way_points[1:-1]:
+    #     folium.Marker([waypoint[0], waypoint[1]]).add_to(route_map)
 
     # Add route to map
     folium.PolyLine(locations=route_coords, color='blue', weight=2, opacity=1).add_to(route_map)
@@ -104,7 +106,7 @@ def generate_course_map(start_location, distance):
     return course_data
 
 
-def create_waypoints(origin, distance):
+def create_waypoints(origin: dict, distance: float):
     """Generates a list of way_points around a circle starting from the start location, in a random direction."""
     # Approximation for degrees to kilometres (based on Stockholm)
     lat_deg_to_km = 1 / 111
@@ -143,7 +145,7 @@ def create_waypoints(origin, distance):
     return way_points, centre
 
 
-def coords_to_waypoint(coords):
+def coords_to_waypoint(coords: list):
     """Takes a list of coordinate tuples as input.
     For each point excluding the starting point, attempts to find a
     highway nearby, and if successful selects first node coordinates from highway.
