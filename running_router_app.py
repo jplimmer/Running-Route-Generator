@@ -52,6 +52,7 @@ def generate_course_handler():
     # Return course_data as part of JSON response for AJAX request
     return jsonify({"course_data": course_data})
 
+
 def generate_course_map(start_location: str, distance: float):
     """Takes start_location and distance as input. Creates map instance, generates route and plots on map.
     Returns dictionary of info for displaying map, including a map HTML."""
@@ -117,7 +118,7 @@ def create_waypoints(origin: dict, distance: float):
     distance_km = distance
 
     # Radius
-    scaling_factor = 0.7
+    scaling_factor = 0.7 # to account for extra distance from a non-perfect circle
     radius = (distance_km / (2 * math.pi)) * scaling_factor
 
     # Random direction
